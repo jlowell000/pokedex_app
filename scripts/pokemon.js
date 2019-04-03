@@ -9,18 +9,36 @@ class Pokemon {
     }
     async init() {
         if (this.data.id) {
-            this.data = await API.poke.getPokemon(this.data.id)
-            name
-            this.data.species = await API.poke.getSpecies(this.data.id)
-            await this.flavorTextInit()
+            this.data = await API.poke.getPokemon(this.data.id);
+            this.data.species = await API.poke.getSpecies(this.data.id);
+
             this.ele.innerHTML = this.template();
+
+            this.ele.querySelector(`#types_${this.data.id}`).innerHTML = this.data.types.reverse()
+                .map(t => { return `<span id='types_${this.data.id}_${t.type.name}'></span>` }).join(' | ')
+            this.data.types.reverse()
+                .map(t => { return new Type(this.ele.querySelector(`#types_${this.data.id}_${t.type.name}`), t.type) })
+                .forEach(t => t.init());
+
+            this[`moves_${this.data.id}`] = new MoveList(this.ele.querySelector(`#moves_${this.data.id}`), this.data.moves)
+
+            this[`flavor_text_${this.data.id}`] = new FlavorText(this.ele.querySelector(`#flavor_text_${this.data.id}`), this.data.species);
+            this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.addEventListener('click', this.tabClick.bind(this)))
         }
     }
-    async flavorTextInit() {
-        let versionArr = await Promise.all(filterByLang(this.data.species.flavor_text_entries).map(f => { return API.poke.getVersion(f.version.name) }))
-        versionArr.forEach(v => {
-            this.data.species.flavor_text_entries.filter(f => { return f.version.name === v.name }).forEach(f => f.version = v);
-        })
+    tabClick(e) {
+        if (!e.target.classList.contains('is-active')) {
+            this.tabClear();
+            e.target.classList.add('is-active');
+            this.ele.querySelector(e.target.getAttribute('controls')).style.display = 'block';
+            this[e.target.getAttribute('controls').replace('#', '')].init()
+        } else {
+            this.tabClear();
+        }
+    }
+    tabClear() {
+        this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.classList.remove('is-active'))
+        this.ele.querySelectorAll('nav .panel-block').forEach(ele => ele.style.display = 'none')
     }
     template() {
         return `<div class='box'>
@@ -31,15 +49,17 @@ class Pokemon {
                                 <span class= 'level-item'>
                                     <figure class='image is-96x96'><img src='${this.data.sprites.front_default}'></figure>
                                 </span>
+                                <span id='types_${this.data.id}'></span>
                             </div>
                         </div>
-                        <div class='content'><ul>${this.flavorTextTemplate()}</ul></div>
+                        <nav class='panel'>
+                            <p class='panel-heading' controls='#flavor_text_${this.data.id}'>Flavor Text</p>
+                            <div id='flavor_text_${this.data.id}' class='panel-block' style='display:none'></div>
+
+                            <p class='panel-heading' controls='#moves_${this.data.id}'>Moves</p>
+                            <div id='moves_${this.data.id}' class='panel-block' style='display:none'></div>
+                        </nav>
                     </div>
                 </div>`
-    }
-    flavorTextTemplate() {
-        return filterByLang(this.data.species.flavor_text_entries)
-            .sort((a, b) => { return a.version.id - b.version.id })
-            .map(f => { return `<li><strong>${findByLang(f.version.names).name}</strong>: ${f.flavor_text}</li>` }).join('')
     }
 }

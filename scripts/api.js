@@ -1,18 +1,6 @@
 class CommonApi {
-    constructor() {
-        if (sessionStorage.commonApiCache) {
-            this.cache = JSON.parse(sessionStorage.commonApiCache);
-        } else {
-            this.cache = {};
-        }
-    }
-    async cachedGet(url) {
-        if (!this.cache[url]) {
-            this.cache[url] = await (await fetch(url)).json();
-            async () => { sessionStorage.commonApiCache = JSON.stringify(this.cache); }
-        }
-        return this.cache[url];
-    }
+    constructor() { }
+    async get(url) { return (await fetch(url)).json(); }
 
 }
 class PokeApi {
@@ -22,13 +10,19 @@ class PokeApi {
     }
 
     async getPokemon(id) {
-        return this.cmn.cachedGet(`${this.pokeapi}pokemon/${id}/`)
+        return this.cmn.get(`${this.pokeapi}pokemon/${id}/`)
     }
     async getSpecies(id) {
-        return this.cmn.cachedGet(`${this.pokeapi}pokemon-species/${id}/`)
+        return this.cmn.get(`${this.pokeapi}pokemon-species/${id}/`)
     }
     async getVersion(id) {
-        return this.cmn.cachedGet(`${this.pokeapi}version/${id}/`)
+        return this.cmn.get(`${this.pokeapi}version/${id}/`)
+    }
+    async getType(id) {
+        return this.cmn.get(`${this.pokeapi}type/${id}/`)
+    }
+    async getMove(id) {
+        return this.cmn.get(`${this.pokeapi}move/${id}/`)
     }
 
 }
