@@ -1,0 +1,16 @@
+{
+  "name": "pokedex_app",
+  "version": "1.0.0",
+  "description": "Mostly a place for me to mess around with HTML/JS things.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
+  }
+}

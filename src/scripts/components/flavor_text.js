@@ -1,10 +1,15 @@
-class FlavorText {
+import ObjectList from './list'
+
+import PokeApi from '../services/api'
+import {findByLang} from '../services/util'
+
+export default class FlavorText {
     constructor(ele, flavorText) {
         this.ele = ele;
         this.flavorText = flavorText;
     }
     async init() {
-        this.flavorText.version = await API.poke.getVersion(this.flavorText.version.name)
+        this.flavorText.version = await new PokeApi().getVersion(this.flavorText.version.name)
         this.ele.innerHTML = this.template();
     }
     template() {
@@ -24,3 +29,5 @@ class FlavorTextList {
         this.objList.init();
     }
 }
+
+export { FlavorText, FlavorTextList }

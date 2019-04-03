@@ -3,7 +3,7 @@ class CommonApi {
     async get(url) { return (await fetch(url)).json(); }
 
 }
-class PokeApi {
+export default class PokeApi {
     constructor() {
         this.cmn = new CommonApi();
         this.pokeapi = 'https://pokeapi.co/api/v2/';
@@ -26,3 +26,5 @@ class PokeApi {
     }
 
 }
+
+export { CommonApi, PokeApi }

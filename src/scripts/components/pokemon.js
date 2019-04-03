@@ -1,4 +1,11 @@
-class Pokemon {
+import Type from './type'
+import { FlavorTextList } from './flavor_text'
+import { MoveList } from './move'
+
+import PokeApi from '../services/api'
+import { filterByLang, findByLang } from '../services/util'
+
+export default class Pokemon {
     constructor(ele) {
         this.ele = ele;
         this.data = {};
@@ -9,8 +16,9 @@ class Pokemon {
     }
     async init() {
         if (this.data.id) {
-            this.data = await API.poke.getPokemon(this.data.id);
-            this.data.species = await API.poke.getSpecies(this.data.id);
+            let api = new PokeApi()
+            this.data = await api.getPokemon(this.data.id);
+            this.data.species = await api.getSpecies(this.data.id);
 
             this.ele.innerHTML = this.template();
 
