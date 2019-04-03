@@ -32,7 +32,9 @@ class Pokemon {
             this.tabClear();
             e.target.classList.add('is-active');
             this.ele.querySelector(e.target.getAttribute('controls')).style.display = 'block';
-            this[e.target.getAttribute('controls').replace('#', '')].init()
+            if (!this.ele.querySelector(e.target.getAttribute('controls')).innerHTML) {
+                this[e.target.getAttribute('controls').replace('#', '')].init()
+            }
         } else {
             this.tabClear();
         }
