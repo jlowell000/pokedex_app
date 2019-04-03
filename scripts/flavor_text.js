@@ -1,20 +1,26 @@
 class FlavorText {
-    constructor(ele, species) {
+    constructor(ele, flavorText) {
         this.ele = ele;
-        this.species = species;
+        this.flavorText = flavorText;
     }
     async init() {
-        this.species = await API.poke.getSpecies(this.species.id ? this.species.id : this.species.name ? this.species.name : '');
-        let versionArr = await Promise.all(filterByLang(this.species.flavor_text_entries).map(f => { return API.poke.getVersion(f.version.name) }))
-        versionArr.forEach(v => { this.species.flavor_text_entries.filter(f => { return f.version.name === v.name }).forEach(f => f.version = v); });
+        this.flavorText.version = await API.poke.getVersion(this.flavorText.version.name)
         this.ele.innerHTML = this.template();
     }
     template() {
-        return `<ul>${this.flavorTextList()}</ul>`;
+        return `<div class='columns'>
+                    <div class='column is-2'><strong>${findByLang(this.flavorText.version.names).name}</strong>:</div>
+                    <div class='column'>${this.flavorText.flavor_text}</div>
+                </div>`;
     }
-    flavorTextList() {
-        return filterByLang(this.species.flavor_text_entries)
-            .sort((a, b) => { return a.version.id - b.version.id })
-            .map(f => { return `<li><strong>${findByLang(f.version.names).name}</strong>: ${f.flavor_text}</li>` }).join('')
+}
+class FlavorTextList {
+    constructor(ele, ftList) {
+        this.ele = ele;
+        this.ftList = ftList;
+        this.objList = new ObjectList(this.ele, this.ftList.map(ft => { return new FlavorText(null, ft) }))
+    }
+    async init() {
+        this.objList.init();
     }
 }

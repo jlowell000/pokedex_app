@@ -20,9 +20,10 @@ class Pokemon {
                 .map(t => { return new Type(this.ele.querySelector(`#types_${this.data.id}_${t.type.name}`), t.type) })
                 .forEach(t => t.init());
 
+            this[`flavor_text_${this.data.id}`] = new FlavorTextList(this.ele.querySelector(`#flavor_text_${this.data.id}`),
+                filterByLang(this.data.species.flavor_text_entries));
             this[`moves_${this.data.id}`] = new MoveList(this.ele.querySelector(`#moves_${this.data.id}`), this.data.moves)
 
-            this[`flavor_text_${this.data.id}`] = new FlavorText(this.ele.querySelector(`#flavor_text_${this.data.id}`), this.data.species);
             this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.addEventListener('click', this.tabClick.bind(this)))
         }
     }
