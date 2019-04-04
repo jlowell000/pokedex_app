@@ -1,2 +1,6 @@
 # pokedex_app
-Mostly a place for me to mess around with HTML/JS things.
+Mostly a place for me to practice with HTML/JS.
+
+Started messing around with webpack and now it has a structure similar to a react application.
+
+    npx webpack
