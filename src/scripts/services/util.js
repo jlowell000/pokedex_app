@@ -1,4 +1,5 @@
-import { LANGUAGE } from '../../index'
+
+const LANGUAGE = 'en'
 
 function filterByLang(arr) {
     return arr.filter(a => { return a.language.name === LANGUAGE })
