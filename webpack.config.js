@@ -1,6 +1,5 @@
 const path = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-// const MinifyPlugin = require("babel-minify-webpack-plugin");
 
 module.exports = {
   entry: ['@babel/polyfill', './src/index.js'],
@@ -9,6 +8,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'js/main.js'
   },
+  optimization: { splitChunks: { chunks: 'all', }, },
   module: {
     rules: [{
       test: /\.m?js$/,
@@ -31,10 +31,9 @@ module.exports = {
         loader: 'file-loader',
         options: { name: '[name].[ext]', outputPath: 'fonts/' }
       }]
-    }]
+    }],
   },
   plugins: [
-    // new MinifyPlugin(minifyOpts, pluginOpts),
     new ExtractTextPlugin('css/style.css')
   ]
 };

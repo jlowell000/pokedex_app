@@ -14,7 +14,7 @@ export default class FlavorText {
     }
     template() {
         return `<div class='columns'>
-                    <div class='column is-2'><strong>${findByLang(this.flavorText.version.names).name}</strong>:</div>
+                    <div class='column is-2'><strong>${findByLang(this.flavorText.version.names).name} Pokedex Entry</strong>:</div>
                     <div class='column'>${this.flavorText.flavor_text}</div>
                 </div>`;
     }

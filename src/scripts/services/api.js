@@ -1,6 +1,12 @@
+const REQUEST_CACHE = {};
+
 class CommonApi {
     constructor() { }
-    async get(url) { return (await fetch(url)).json(); }
+
+    async get(url) {
+        if (!REQUEST_CACHE[url]) { REQUEST_CACHE[url] = fetch(url).then(r => { return r.json() }) }
+        return REQUEST_CACHE[url];
+    }
 
 }
 export default class PokeApi {
@@ -24,7 +30,12 @@ export default class PokeApi {
     async getMove(id) {
         return this.cmn.get(`${this.pokeapi}move/${id}/`)
     }
-
+    async getMoveDamageClass(id) {
+        return this.cmn.get(`${this.pokeapi}move-damage-class/${id}/`)
+    }
+    async getMoveLearnMethod(id) {
+        return this.cmn.get(`${this.pokeapi}move-learn-method/${id}/`)
+    }
 }
 
-export { CommonApi, PokeApi }
+export { CommonApi, PokeApi, REQUEST_CACHE }

@@ -14,6 +14,6 @@ export default class ObjectList {
         return `<span id=${id}><i class='fas fa-spinner fa-pulse fa-3x'/></i></span>`
     }
     template() {
-        return `${this.spinner('list_spin')}<ul class='is-invisible'>${this.objList.map((v, i) => { return `<li id='obj_${i}'></li>` }).join('')}</ul>`;
+        return `${this.spinner('list_spin')}<ul class='is-invisible'>${this.objList.map((v, i) => { return `<li id='obj_${i}' style='border-top:solid;'></li>` }).join('')}</ul>`;
     }
 }
