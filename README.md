@@ -1,4 +1,6 @@
 # pokedex_app
-Mostly a place for me to mess around with HTML/JS things.
+Mostly a place for me to practice with HTML/JS.
 
-How to Use: Pull the repo. Open index.html
+Started messing around with webpack and now it has a structure similar to a react application.
+
+    npx webpack
