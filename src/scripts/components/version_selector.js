@@ -12,6 +12,7 @@ export default class VersionSelector {
         this.versions = await Promise.all(this.flavorTextEntries.map(f => { return api.getVersion(f.version.name) }))
         this.ele.innerHTML = this.template();
         this.ele.querySelector('select').addEventListener('change', this.onChange.bind(this));
+        return true;
     }
     onChange(e) {
         this.onChangeCallBack(this.versions.find(v => { return v.name === e.target.selectedOptions[0].value }))

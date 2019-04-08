@@ -11,7 +11,7 @@ export default class ObjectList {
         this.ele.querySelector('ul').classList.remove('is-invisible')
     }
     spinner(id) {
-        return `<span id=${id}><i class='fas fa-spinner fa-pulse fa-3x'/></i></span>`
+        return `<div id=${id} class='columns'><i class='column fas fa-spinner fa-pulse fa-3x'/></i></div>`
     }
     template() {
         return `${this.spinner('list_spin')}<ul class='is-invisible'>${this.objList.map((v, i) => { return `<li id='obj_${i}' style='border-top:solid;'></li>` }).join('')}</ul>`;

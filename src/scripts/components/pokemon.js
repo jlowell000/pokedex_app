@@ -19,37 +19,43 @@ export default class Pokemon {
         if (this.data.id) {
             let api = new PokeApi()
             this.data = await api.getPokemon(this.data.id);
-            this.data.species = await api.getSpecies(this.data.id);
+            this.data.species = await api.getSpecies(this.data.species.name);
 
             this.ele.innerHTML = this.template();
 
             this.ele.querySelector(`#types_${this.data.id}`).innerHTML = this.data.types.reverse()
                 .map(t => { return `<span id='types_${this.data.id}_${t.type.name}'></span>` }).join(' | ')
-            this.data.types.reverse()
+            let types = this.data.types.reverse()
                 .map(t => { return new Type(this.ele.querySelector(`#types_${this.data.id}_${t.type.name}`), t.type) })
-                .forEach(t => t.init());
+                .map(t => { return t.init() });
 
             this[`version_${this.data.id}`] = new VersionSelector(this.ele.querySelector(`#version_${this.data.id}`),
                 this.data.species.flavor_text_entries, this.onVersionChange.bind(this));
-            this[`version_${this.data.id}`].init();
 
-            this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.addEventListener('click', this.tabClick.bind(this)))
+            this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.addEventListener('click', this.tabClick.bind(this)));
+
+            types.push(this[`version_${this.data.id}`].init())
+            await Promise.all(types);
+            return true;
         }
     }
     initVersionedData() {
         this[`flavor_text_${this.data.id}`] = new FlavorText(this.ele.querySelector(`#flavor_text_${this.data.id}`),
             findByVersion(filterByLang(this.data.species.flavor_text_entries), this.version.name));
-        this[`flavor_text_${this.data.id}`].init();
+        let p = [this[`flavor_text_${this.data.id}`].init()]
 
         this[`moves_${this.data.id}`] = new MoveList(this.ele.querySelector(`#moves_${this.data.id}`), this.data.moves, this.version)
+
+
         if (this.ele.querySelector(`#moves_${this.data.id}_head`).classList.contains('is-active')) {
-            this[`moves_${this.data.id}`].init();
+            p.push(this[`moves_${this.data.id}`].init())
         }
+        return Promise.all(p);
     }
-    onVersionChange(version) {
+    async onVersionChange(version) {
         this.version = version;
         this.ele.querySelector('nav').style.display = 'block';
-        this.initVersionedData();
+        await this.initVersionedData();
     }
     tabClick(e) {
         if (!e.target.classList.contains('is-active')) {
