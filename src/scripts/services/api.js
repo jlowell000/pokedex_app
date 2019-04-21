@@ -18,6 +18,9 @@ export default class PokeApi {
     async getPokemon(id) {
         return this.cmn.get(`${this.pokeapi}pokemon/${id}/`)
     }
+    async getPokemonList(offset, limit) {
+        return this.cmn.get(`${this.pokeapi}pokemon?offset=${offset}&limit=${limit}`)
+    }
     async getSpecies(id) {
         return this.cmn.get(`${this.pokeapi}pokemon-species/${id}/`)
     }

@@ -1,7 +1,6 @@
 import Type from './type'
 import { FlavorText } from './flavor_text'
 import { MoveList } from './move'
-import VersionSelector from './version_selector'
 
 import PokeApi from '../services/api'
 import { filterByLang, findByLang, findByVersion } from '../services/util'
@@ -10,10 +9,7 @@ export default class Pokemon {
     constructor(ele) {
         this.ele = ele;
         this.data = {};
-        if (this.ele.getAttribute('data-num')) {
-            this.data.id = this.ele.getAttribute('data-num');
-            this.init();
-        }
+        this.show = false;
     }
     async init() {
         if (this.data.id) {
@@ -23,20 +19,27 @@ export default class Pokemon {
 
             this.ele.innerHTML = this.template();
 
+            this.ele.querySelector(`#head_${this.data.id}`).addEventListener('click', this.headClick.bind(this))
+
             this.ele.querySelector(`#types_${this.data.id}`).innerHTML = this.data.types.reverse()
                 .map(t => { return `<span id='types_${this.data.id}_${t.type.name}'></span>` }).join(' | ')
             let types = this.data.types.reverse()
                 .map(t => { return new Type(this.ele.querySelector(`#types_${this.data.id}_${t.type.name}`), t.type) })
                 .map(t => { return t.init() });
 
-            this[`version_${this.data.id}`] = new VersionSelector(this.ele.querySelector(`#version_${this.data.id}`),
-                this.data.species.flavor_text_entries, this.onVersionChange.bind(this));
-
             this.ele.querySelectorAll('nav .panel-heading').forEach(ele => ele.addEventListener('click', this.tabClick.bind(this)));
 
-            types.push(this[`version_${this.data.id}`].init())
             await Promise.all(types);
             return true;
+        }
+    }
+    headClick() {
+        if (!this.show) {
+            this.ele.querySelector(`#body_${this.data.id}`).style.display = 'block';
+            this.show = !this.show;
+        } else {
+            this.ele.querySelector(`#body_${this.data.id}`).style.display = 'none';
+            this.show = !this.show;
         }
     }
     initVersionedData() {
@@ -74,21 +77,21 @@ export default class Pokemon {
         this.ele.querySelectorAll('nav .panel-block').forEach(ele => ele.style.display = 'none')
     }
     template() {
-        return `<div class='box'>
-                        <section class='section'>
-                            <div class='level'>
-                                <div class='level-left'>
-                                    <h1 class='level-item title'>${findByLang(this.data.species.names).name}</h1>
-                                    <span class= 'level-item'>
-                                        <figure class='image is-96x96'><img src='${this.data.sprites.front_default}'></figure>
-                                    </span>
-                                    <span id='types_${this.data.id}'></span>
-                                </div>
-                                <div class='level-right'>
-                                    <span id='version_${this.data.id}'></span>
-                                </div>
+        return `<div class='panel'>
+                    <section id='head_${this.data.id}' class='panel-heading'>
+                        <div class='level'>
+                            <div class='level-left'>
+                                <span>
+                                    <figure class='image is-96x96'><img src='${this.data.sprites.front_default}'></figure>
+                                </span>
+                                <h1 class='title'>${findByLang(this.data.species.names).name}</h1>
                             </div>
-                        </section>
+                            <div class='level-right'>
+                                <span id='types_${this.data.id}'></span>
+                            </div>
+                        </div>
+                    </section>
+                    <span id='body_${this.data.id}' class='panel-block' style='display:none'>
                         <section class='section'>
                             <div id='flavor_text_${this.data.id}'></div>
                         </section>
@@ -98,7 +101,7 @@ export default class Pokemon {
                                 <div id='moves_${this.data.id}' class='panel-block' style='display:none'></div>
                             </nav>
                         </section>
-                    </div>
+                    </span>
                 </div>`
     }
 }

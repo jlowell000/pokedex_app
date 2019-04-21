@@ -17,6 +17,10 @@ export default class VersionSelector {
     onChange(e) {
         this.onChangeCallBack(this.versions.find(v => { return v.name === e.target.selectedOptions[0].value }))
     }
+    getVersion() {
+        let s = this.ele.querySelector('select').selectedOptions[0].value;
+        return this.versions.find(v => { return v.name === s })
+    }
     template() {
         return `<div class="select">
                     <select>
