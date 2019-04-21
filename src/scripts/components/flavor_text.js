@@ -1,7 +1,7 @@
 import ObjectList from './list'
 
 import PokeApi from '../services/api'
-import {findByLang} from '../services/util'
+import { findByLang } from '../services/util'
 
 export default class FlavorText {
     constructor(ele, flavorText) {
@@ -9,13 +9,17 @@ export default class FlavorText {
         this.flavorText = flavorText;
     }
     async init() {
-        this.flavorText.version = await new PokeApi().getVersion(this.flavorText.version.name)
-        this.ele.innerHTML = this.template();
+        if (this.flavorText) {
+            this.flavorText.version = await new PokeApi().getVersion(this.flavorText.version.name)
+            this.ele.innerHTML = this.template(findByLang(this.flavorText.version.names).name, this.flavorText.flavor_text);
+        } else {
+            this.ele.innerHTML = this.template('', 'Not Available')
+        }
     }
-    template() {
+    template(name, text) {
         return `<div class='columns'>
-                    <div class='column is-2'><strong>${findByLang(this.flavorText.version.names).name} Pokedex Entry</strong>:</div>
-                    <div class='column'>${this.flavorText.flavor_text}</div>
+                    <div class='column is-2'><strong>${name} Pokedex Entry</strong>:</div>
+                    <div class='column'>${text}</div>
                 </div>`;
     }
 }

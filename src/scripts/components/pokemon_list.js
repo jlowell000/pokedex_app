@@ -42,12 +42,8 @@ export default class PokemonList {
             this.displayedPokemon[i - this.offset].data.id = this.pokemonArr[i].name;
         }
 
-        let data = await api.getPokemon(list.results[0].name);
-        data.species = await api.getSpecies(data.species.name);
-
         if (!this.versionPicker) {
-            this.versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'),
-                data.species.flavor_text_entries, this.onVersionChange.bind(this));
+            this.versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'), this.onVersionChange.bind(this));
             await this.versionPicker.init()
         } else {
             this.version = this.versionPicker.getVersion();

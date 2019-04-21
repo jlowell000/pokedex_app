@@ -24,6 +24,9 @@ export default class PokeApi {
     async getSpecies(id) {
         return this.cmn.get(`${this.pokeapi}pokemon-species/${id}/`)
     }
+    async getAllVersions(){
+        return this.cmn.get(`${this.pokeapi}version?offset=0&limit=999`)
+    }
     async getVersion(id) {
         return this.cmn.get(`${this.pokeapi}version/${id}/`)
     }

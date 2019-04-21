@@ -2,14 +2,14 @@ import PokeApi from '../services/api'
 import { filterByLang, findByLang, findByVersion } from '../services/util'
 
 export default class VersionSelector {
-    constructor(ele, flavorTextEntries, onChangeCallBack) {
+    constructor(ele, onChangeCallBack) {
         this.ele = ele;
-        this.flavorTextEntries = filterByLang(flavorTextEntries);
         this.onChangeCallBack = onChangeCallBack;
     }
     async init() {
         let api = new PokeApi();
-        this.versions = await Promise.all(this.flavorTextEntries.map(f => { return api.getVersion(f.version.name) }))
+        this.versions = (await api.getAllVersions()).results
+        this.versions = await Promise.all(this.versions.map(v => { return api.getVersion(v.name) }))
         this.ele.innerHTML = this.template();
         this.ele.querySelector('select').addEventListener('change', this.onChange.bind(this));
         return true;
