@@ -16,7 +16,7 @@ export default class Pokemon {
             let api = new PokeApi()
             this.data = await api.getPokemon(this.data.id);
             this.data.species = await api.getSpecies(this.data.species.name);
-
+            console.log(this.ele)
             this.ele.innerHTML = this.template();
 
             this.ele.querySelector(`#head_${this.data.id}`).addEventListener('click', this.headClick.bind(this))
@@ -34,7 +34,7 @@ export default class Pokemon {
         }
     }
     headClick() {
-        if (!this.show) {
+        if (!this.show && this.version) {
             this.ele.querySelector(`#body_${this.data.id}`).style.display = 'block';
             this.show = !this.show;
         } else {

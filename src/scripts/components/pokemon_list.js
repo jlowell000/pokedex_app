@@ -10,7 +10,7 @@ export default class PokemonList {
     }
     async init() {
 
-
+        this.toggleControls(true)
         let api = new PokeApi();
         let list = await api.getPokemonList(this.offset, this.limit);
         if (!this.ele.innerHTML) {
@@ -88,6 +88,15 @@ export default class PokemonList {
             }
             this.init();
         })
+        let burger = this.ele.querySelector('.navbar-burger');
+        let menu = this.ele.querySelector('.navbar-menu')
+        burger.addEventListener('click', () => {
+            let active = 'is-active',
+                isActive = burger.classList.contains(active);
+            burger.classList[!isActive ? 'add' : 'remove'](active);
+            menu.classList[!isActive ? 'add' : 'remove'](active)
+        })
+
     }
     toggleControls(lock) {
         this.ele.querySelectorAll('#left_page, #right_page, select').forEach(ele => ele[lock ? 'setAttribute' : 'removeAttribute']('disabled', true))
@@ -119,6 +128,11 @@ export default class PokemonList {
                             </div>
                         </div>
                     </div>
+                    <a role='button' class='navbar-burger' aria-label='menu' aria-expanded='false'>
+                        <span aria-hidden='true'></span>
+                        <span aria-hidden='true'></span>
+                        <span aria-hidden='true'></span>
+                    </a>
                 </nav>
                 <section class='section'>
                     <div class='container'>
