@@ -2,19 +2,20 @@ import ObjectList from './list'
 
 import PokeApi from '../services/api'
 import { findByLang } from '../services/util'
+import Component from './Component';
 
-export default class FlavorText {
-    constructor(ele, flavorText) {
-        this.ele = ele;
-        this.flavorText = flavorText;
+export default class FlavorText extends Component {
+    constructor(ele) {
+        super(ele);
     }
     async init() {
-        if (this.flavorText) {
-            this.flavorText.version = await new PokeApi().getVersion(this.flavorText.version.name)
-            this.ele.innerHTML = this.template(findByLang(this.flavorText.version.names).name, this.flavorText.flavor_text);
+        if (this.state.flavorText) {
+            this.state.flavorText.version = await new PokeApi().getVersion(this.state.flavorText.version.name);
+            this.ele.innerHTML = this.template(findByLang(this.state.flavorText.version.names).name, this.state.flavorText.flavor_text);
         } else {
             this.ele.innerHTML = this.template('', 'Not Available')
         }
+        return super.init();
     }
     template(name, text) {
         return `<div class='columns'>
@@ -23,14 +24,17 @@ export default class FlavorText {
                 </div>`;
     }
 }
-class FlavorTextList {
-    constructor(ele, ftList) {
-        this.ele = ele;
-        this.ftList = ftList;
-        this.objList = new ObjectList(this.ele, this.ftList.map(ft => { return new FlavorText(null, ft) }))
+class FlavorTextList extends ObjectList {
+    constructor(ele) {
+        super(ele);
     }
     async init() {
-        this.objList.init();
+        this.childComponents = this.state.ftList.map(ft => {
+            let f = new FlavorText(null);
+            f.setState({ flavorText: ft });
+            return f;
+        });
+        return super.init();
     }
 }
 

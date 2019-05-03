@@ -1,21 +1,23 @@
 import PokeApi from '../services/api'
-import { filterByLang, findByLang, findByVersion } from '../services/util'
+import { findByLang } from '../services/util'
+import Component from './Component';
 
-export default class VersionSelector {
-    constructor(ele, onChangeCallBack) {
-        this.ele = ele;
-        this.onChangeCallBack = onChangeCallBack;
+export default class VersionSelector extends Component {
+    constructor(ele, ) {
+        super(ele);
     }
     async init() {
         let api = new PokeApi();
         this.versions = (await api.getAllVersions()).results
         this.versions = await Promise.all(this.versions.map(v => { return api.getVersion(v.name) }))
+
         this.ele.innerHTML = this.template();
         this.ele.querySelector('select').addEventListener('change', this.onChange.bind(this));
-        return true;
+
+        return super.init();
     }
     onChange(e) {
-        this.onChangeCallBack(this.versions.find(v => { return v.name === e.target.selectedOptions[0].value }))
+        this.state.onChangeCallBack(this.versions.find(v => { return v.name === e.target.selectedOptions[0].value }))
     }
     getVersion() {
         let s = this.ele.querySelector('select').selectedOptions[0].value;

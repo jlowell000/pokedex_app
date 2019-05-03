@@ -39,11 +39,12 @@ export default class PokemonList {
                 this.pokemonArr[i] = list.results[i - this.offset];
             }
             this.displayedPokemon[i - this.offset] = new Pokemon(listEle.querySelector(`#poke_${this.pokemonArr[i].name}`));
-            this.displayedPokemon[i - this.offset].data.id = this.pokemonArr[i].name;
+            this.displayedPokemon[i - this.offset].setState({ data: { id: this.pokemonArr[i].name } });
         }
 
         if (!this.versionPicker) {
-            this.versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'), this.onVersionChange.bind(this));
+            this.versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'));
+            this.versionPicker.setState({ onChangeCallBack: this.onVersionChange.bind(this) });
             await this.versionPicker.init()
         } else {
             this.version = this.versionPicker.getVersion();
