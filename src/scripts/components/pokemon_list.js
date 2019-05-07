@@ -13,7 +13,7 @@ export default class PokemonList extends Component {
         })
     }
     async init() {
-
+        
         this.toggleControls(true)
         let api = new PokeApi();
         let list = await api.getPokemonList(this.state.offset, this.state.limit);
@@ -23,7 +23,6 @@ export default class PokemonList extends Component {
         this.toggleControls(true)
         let listEle = this.ele.querySelector('#list');
         listEle.innerHTML = '';
-
         if (!this.pokemonArr) {
             this.pokemonArr = new Array(list.count);
         }

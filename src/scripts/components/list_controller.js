@@ -1,6 +1,7 @@
 import Component from './common/Component'
 import Selector from './common/Selector'
 import VersionSelector from './version_selector'
+import LanguageSelector from './language_selector';
 
 export default class ListController extends Component {
     constructor(ele) {
@@ -17,7 +18,7 @@ export default class ListController extends Component {
 
             let pageSelector = new Selector(this.ele.querySelector('#select_page'));
             pageSelector.setState({
-                optionsMap: this.pageoOtions(),
+                optionsMap: this.pageOptions(),
                 onChange: this.onPageSelect.bind(this),
                 value: this.state.pageNumber,
             });
@@ -26,6 +27,9 @@ export default class ListController extends Component {
             let versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'));
             versionPicker.setState({ version: this.state.version, onChangeCallBack: this.onVersionChange.bind(this) });
             this.childComponents.push(versionPicker);
+
+            let langSelector = new LanguageSelector(this.ele.querySelector('#lang_selector'));
+            this.childComponents.push(langSelector);
 
             this.ele.querySelector('#select_limit select').addEventListener('change', this.onLimitSelect.bind(this));
             this.ele.querySelector('#left_page').addEventListener('click', () => { this.setoffset(this.state.offset - this.state.limit) });
@@ -53,7 +57,7 @@ export default class ListController extends Component {
         });
         this.setoffset((pageNumber) * this.state.limit)
     }
-    pageoOtions() {
+    pageOptions() {
         return new Map(new Array(this.state.numberOfPages).fill(0).map((v, i) => { return [i, i + 1] }));
     }
     onLimitSelect() {
@@ -96,6 +100,9 @@ export default class ListController extends Component {
                             </div>
                             <div class='navbar-item'>
                                 <span id='version_picker'></span>
+                            </div>
+                            <div class='navbar-item'>
+                                <span id='lang_selector' class='select'></span>
                             </div>
                         </div>
                     </div>

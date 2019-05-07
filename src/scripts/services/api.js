@@ -1,5 +1,8 @@
 const REQUEST_CACHE = {};
 
+/**
+ * Common function if there will be other apis
+ */
 class CommonApi {
     constructor() { }
 
@@ -9,39 +12,43 @@ class CommonApi {
     }
 
 }
-export default class PokeApi {
+export default class PokeApi extends CommonApi {
     constructor() {
-        this.cmn = new CommonApi();
+        super();
         this.pokeapi = 'https://pokeapi.co/api/v2/';
     }
-
+    async getLanguage(id){
+        return this.get(`${this.pokeapi}language/${id}`)
+    }
+    async getLanguageList(){
+        return this.get(`${this.pokeapi}language`)
+    }
     async getPokemon(id) {
-        return this.cmn.get(`${this.pokeapi}pokemon/${id}/`)
+        return this.get(`${this.pokeapi}pokemon/${id}/`)
     }
     async getPokemonList(offset, limit) {
-        return this.cmn.get(`${this.pokeapi}pokemon?offset=${offset}&limit=${limit}`)
+        return this.get(`${this.pokeapi}pokemon?offset=${offset}&limit=${limit}`)
     }
     async getSpecies(id) {
-        return this.cmn.get(`${this.pokeapi}pokemon-species/${id}/`)
+        return this.get(`${this.pokeapi}pokemon-species/${id}/`)
     }
-    async getAllVersions(){
-        return this.cmn.get(`${this.pokeapi}version?offset=0&limit=999`)
+    async getAllVersions() {
+        return this.get(`${this.pokeapi}version?offset=0&limit=999`)
     }
     async getVersion(id) {
-        return this.cmn.get(`${this.pokeapi}version/${id}/`)
+        return this.get(`${this.pokeapi}version/${id}/`)
     }
     async getType(id) {
-        return this.cmn.get(`${this.pokeapi}type/${id}/`)
+        return this.get(`${this.pokeapi}type/${id}/`)
     }
     async getMove(id) {
-        return this.cmn.get(`${this.pokeapi}move/${id}/`)
+        return this.get(`${this.pokeapi}move/${id}/`)
     }
     async getMoveDamageClass(id) {
-        return this.cmn.get(`${this.pokeapi}move-damage-class/${id}/`)
+        return this.get(`${this.pokeapi}move-damage-class/${id}/`)
     }
     async getMoveLearnMethod(id) {
-        return this.cmn.get(`${this.pokeapi}move-learn-method/${id}/`)
+        return this.get(`${this.pokeapi}move-learn-method/${id}/`)
     }
 }
-
 export { CommonApi, PokeApi, REQUEST_CACHE }
