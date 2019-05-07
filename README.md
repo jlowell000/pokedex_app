@@ -3,4 +3,5 @@ Mostly a place for me to practice with HTML/JS.
 
 Started messing around with webpack and now it has a structure similar to a react application.
 
-    npx webpack
+    npm install
+    npm run-script build
