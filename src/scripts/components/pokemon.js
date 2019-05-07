@@ -4,7 +4,7 @@ import { MoveList } from './move'
 
 import PokeApi from '../services/api'
 import { filterByLang, findByLang, findByVersion } from '../services/util'
-import Component from './Component';
+import Component from './common/Component';
 
 export default class Pokemon extends Component {
     constructor(ele) {
@@ -107,7 +107,7 @@ export default class Pokemon extends Component {
                             <div id='flavor_text_${this.state.data.id}'></div>
                         </section>
                         <section class='section'>
-                            <nav class='panel' style='display:none'>
+                            <nav class='panel box is-paddingless' style='display:none'>
                                 <p class='panel-heading' id='moves_${this.state.data.id}_head' controls='#moves_${this.state.data.id}'>Moves</p>
                                 <div id='moves_${this.state.data.id}' class='panel-block' style='display:none'></div>
                             </nav>

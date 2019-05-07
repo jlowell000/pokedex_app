@@ -19,6 +19,6 @@ export default class ObjectList extends Component {
         return `<div id=${id} class='columns'><i class='column fas fa-spinner fa-pulse fa-3x'/></i></div>`
     }
     template() {
-        return `${this.spinner('list_spin')}<ul class='is-invisible'>${this.childComponents.map((v, i) => { return `<li id='obj_${i}' style='border-top:solid;'></li>` }).join('')}</ul>`;
+        return `${this.spinner('list_spin')}<ul class='is-invisible' style='height:400px; overflow-y: scroll;'>${this.childComponents.map((v, i) => { return `<li id='obj_${i}' style='border-top:solid;'></li>` }).join('')}</ul>`;
     }
 }

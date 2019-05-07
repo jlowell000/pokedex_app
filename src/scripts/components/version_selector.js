@@ -1,6 +1,6 @@
 import PokeApi from '../services/api'
 import { findByLang } from '../services/util'
-import Component from './Component';
+import Component from './common/Component';
 
 export default class VersionSelector extends Component {
     constructor(ele, ) {
@@ -12,6 +12,7 @@ export default class VersionSelector extends Component {
         this.versions = await Promise.all(this.versions.map(v => { return api.getVersion(v.name) }))
 
         this.ele.innerHTML = this.template();
+        this.ele.querySelector('select').value = this.state.version ? this.state.version.name : '';
         this.ele.querySelector('select').addEventListener('change', this.onChange.bind(this));
 
         return super.init();
@@ -26,7 +27,7 @@ export default class VersionSelector extends Component {
     template() {
         return `<div class="select">
                     <select>
-                    <option>Select Version</option>
+                    <option value=''>Select Version</option>
                         ${this.versions.map(v => { return `<option value='${v.name}'>${findByLang(v.names).name}</option>` }).join('')}
                     </select>
                 </div>`

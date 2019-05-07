@@ -13,7 +13,7 @@ export default class Pokedex {
         return true;
     }
     template() {
-        return `<section class='section'>
+        return `<section class='section has-background-grey-light'>
                     <span id='output'></span>
                 </section>`
     }

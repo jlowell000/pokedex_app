@@ -1,21 +1,24 @@
-import VersionSelector from './version_selector'
 import Pokemon from './pokemon'
 import PokeApi from '../services/api'
+import Component from './common/Component';
+import ListController from './list_controller';
 
-export default class PokemonList {
+export default class PokemonList extends Component {
     constructor(ele) {
-        this.ele = ele;
-        this.offset = 0;
-        this.limit = 5;
+        super(ele);
+        this.setState({
+            offset: 0,
+            limit: 5,
+            version: null
+        })
     }
     async init() {
 
         this.toggleControls(true)
         let api = new PokeApi();
-        let list = await api.getPokemonList(this.offset, this.limit);
+        let list = await api.getPokemonList(this.state.offset, this.state.limit);
         if (!this.ele.innerHTML) {
             this.ele.innerHTML = this.template();
-            this.controlInit()
         }
         this.toggleControls(true)
         let listEle = this.ele.querySelector('#list');
@@ -24,118 +27,52 @@ export default class PokemonList {
         if (!this.pokemonArr) {
             this.pokemonArr = new Array(list.count);
         }
-        this.numberOfPages = Math.trunc(this.pokemonArr.length / this.limit);
-        this.ele.querySelector('#select_page').innerHTML = this.pageSelectorTemplate();
-        this.ele.querySelector('#select_page select').value = Math.trunc(this.offset / this.limit)
-        this.ele.querySelector('#select_page select').addEventListener('change', () => {
-            this.offset = parseInt(this.ele.querySelector('#select_page select').value) * this.limit;
-            this.init();
-        })
+        let listController = new ListController(this.ele.querySelector('#list_controller'));
+        listController.setState({
+            offset: this.state.offset,
+            limit: this.state.limit,
+            version: this.state.version,
+            onOffsetLimitChange: this.onOffsetLimitChange.bind(this),
+            numberOfPages: Math.trunc(this.pokemonArr.length / this.state.limit),
+            onVersionChange: this.onVersionChange.bind(this)
+        });
+        listController.init();
 
         this.displayedPokemon = new Array(list.results.length);
         listEle.innerHTML = list.results.map(p => { return `<li id='poke_${p.name}'></li>` }).join('');
-        for (let i = this.offset; i < this.offset + this.limit && i < this.pokemonArr.length; i++) {
+        for (let i = this.state.offset; i < this.state.offset + this.state.limit && i < this.pokemonArr.length; i++) {
             if (!this.pokemonArr[i]) {
-                this.pokemonArr[i] = list.results[i - this.offset];
+                this.pokemonArr[i] = list.results[i - this.state.offset];
             }
-            this.displayedPokemon[i - this.offset] = new Pokemon(listEle.querySelector(`#poke_${this.pokemonArr[i].name}`));
-            this.displayedPokemon[i - this.offset].setState({ data: { id: this.pokemonArr[i].name } });
+            this.displayedPokemon[i - this.state.offset] = new Pokemon(listEle.querySelector(`#poke_${this.pokemonArr[i].name}`));
+            this.displayedPokemon[i - this.state.offset].setState({ data: { id: this.pokemonArr[i].name } });
         }
 
-        if (!this.versionPicker) {
-            this.versionPicker = new VersionSelector(this.ele.querySelector('#version_picker'));
-            this.versionPicker.setState({ onChangeCallBack: this.onVersionChange.bind(this) });
-            await this.versionPicker.init()
-        } else {
-            this.version = this.versionPicker.getVersion();
-        }
-
-        this.ele.querySelector('#select_limit select').value = this.limit;
-        let max = this.numberOfPages * this.limit;
-        if (this.offset < 0) {
-            this.offset = 0;
-        } else if (this.offset > max) {
-            this.offset = max;
-        }
         await Promise.all(this.displayedPokemon.map(p => { return p.init() }));
-        if (this.version) {
-            await this.onVersionChange(this.version)
+        if (this.state.version) {
+            await this.onVersionChange(this.state.version)
         }
         this.toggleControls(false)
     }
+    onOffsetLimitChange(offset, limit) {
+        this.setState({
+            offset: offset,
+            limit: limit
+        });
+        this.init();
+    }
     async onVersionChange(version) {
+        this.setState({ version: version })
         await Promise.all(this.displayedPokemon.map(p => { return p.onVersionChange(version) }))
         return true;
     }
 
-    controlInit() {
-        this.ele.querySelector('#select_limit select').addEventListener('change', () => {
-            this.limit = parseInt(this.ele.querySelector('#select_limit select').value.trim())
-            this.init();
-        })
-
-        this.ele.querySelector('#left_page').addEventListener('click', () => {
-            this.offset = this.offset - this.limit
-            if (this.offset < 0) {
-                this.offset = 0;
-            }
-            this.init();
-        })
-        this.ele.querySelector('#right_page').addEventListener('click', () => {
-            let max = this.numberOfPages * this.limit;
-            this.offset = this.offset + this.limit;
-            if (this.offset > max) {
-                this.offset = max;
-            }
-            this.init();
-        })
-        let burger = this.ele.querySelector('.navbar-burger');
-        let menu = this.ele.querySelector('.navbar-menu')
-        burger.addEventListener('click', () => {
-            let active = 'is-active',
-                isActive = burger.classList.contains(active);
-            burger.classList[!isActive ? 'add' : 'remove'](active);
-            menu.classList[!isActive ? 'add' : 'remove'](active)
-        })
-
-    }
     toggleControls(lock) {
         this.ele.querySelectorAll('#left_page, #right_page, select').forEach(ele => ele[lock ? 'setAttribute' : 'removeAttribute']('disabled', true))
     }
-    pageSelectorTemplate() {
-        return `<select>${new Array(this.numberOfPages).fill(0).map((v, i) => { return `<option value='${i}'>${i + 1}</option>` }).join('')}</select>`
-    }
     template() {
-        return `<nav class='navbar is-fixed-top is-danger'>
-                    <div class='navbar-menu'>
-                        <div class='navbar-end'>
-                            <div class='navbar-item'>
-                                <button id='left_page' class='button'><i class='fas fa-angle-left'></i></button>
-                                <span id='select_page' class='select'></span>
-                                <button id='right_page' class='button'><i class='fas fa-angle-right'></i></button>
-                            </div>
-                            <div class='navbar-item'>
-                                <span id='select_limit' class='select'>
-                                    <select>
-                                        <option value='5'>5</option>
-                                        <option value='10'>10</option>
-                                        <option value='20'>20</option>
-                                    </select>
-                                </span>
-                                <span> Per Page</span>
-                            </div>
-                            <div class='navbar-item'>
-                                <span id='version_picker'></span>
-                            </div>
-                        </div>
-                    </div>
-                    <a role='button' class='navbar-burger' aria-label='menu' aria-expanded='false'>
-                        <span aria-hidden='true'></span>
-                        <span aria-hidden='true'></span>
-                        <span aria-hidden='true'></span>
-                    </a>
-                </nav>
-                <section class='section'>
+        return `<span id='list_controller'></span>
+                <section class='section box'>
                     <div class='container'>
                         <ul id='list'></ul>
                     </div>

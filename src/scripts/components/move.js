@@ -1,9 +1,9 @@
-import ObjectList from './list'
+import ObjectList from './common/list'
 import Type from './type'
 
 import PokeApi from '../services/api'
 import { filterByLang, findByLang, findByVersionGroup, filterByVersionGroup } from '../services/util'
-import Component from './Component';
+import Component from './common/Component';
 
 export default class Move extends Component {
     constructor(ele) {

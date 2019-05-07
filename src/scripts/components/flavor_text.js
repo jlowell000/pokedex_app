@@ -1,8 +1,8 @@
-import ObjectList from './list'
+import ObjectList from './common/list'
 
 import PokeApi from '../services/api'
 import { findByLang } from '../services/util'
-import Component from './Component';
+import Component from './common/Component';
 
 export default class FlavorText extends Component {
     constructor(ele) {

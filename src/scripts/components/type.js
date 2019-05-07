@@ -1,7 +1,7 @@
 import PokeApi from '../services/api'
 
 import { findByLang } from '../services/util'
-import Component from './Component';
+import Component from './common/Component';
 
 export default class Type extends Component {
     constructor(ele) {
